@@ -1,49 +1,107 @@
-// Parameter
-r_in_unten = 65;
-r_in_oben = 36;
-h_kegel = 3;
-h_zyl = 40;
-wand = 2;
-winkel = 15;
-anzahl = 4;
+//
+// Parameters
+//
 
-r_innen = 36;
-r_aussen = 39.7;
-h_zylinder = 40;
-fehlender_winkel = 30; // Das Stück, das weggeschnitten wird
+// Tapered adapter section
+bottom_inner_radius = 65;
+top_inner_radius    = 36;
+cone_height         = 3;
 
-$fn = 100;
+// Cylindrical section
+inner_radius        = 36;
+outer_radius        = 39.7;
+cylinder_height     = 40;
 
-// 1. Kegelstumpf (Hohl, Innenmaße bleiben frei)
+// Wall thickness
+wall_thickness      = 2;
+
+// Opening
+missing_angle       = 30;   // Angular section to remove
+
+$fn = 100;                  // High resolution for smooth curves
+
+
+//
+// Hollow tapered section
+//
 difference() {
-    cylinder(h = h_kegel, r = r_in_unten + wand);
-    translate([0, 0, -1])
-       cylinder(h = h_kegel + 2, r = r_in_oben);
+
+    // Outer cone
+    cylinder(
+        h = cone_height,
+        r = bottom_inner_radius + wall_thickness
+    );
+
+    // Inner cavity
+    translate([0, 0, -1]) {
+        cylinder(
+            h = cone_height + 2,
+            r = top_inner_radius
+        );
+    }
 }
 
+
+//
+// Hollow cylinder with opening
+//
 difference() {
-    // 1. Der hohle Hauptzylinder
+
+    //
+    // Main hollow cylinder
+    //
     difference() {
-        cylinder(h = h_zylinder, r = r_aussen);
-        translate([0, 0, -1]) 
-            cylinder(h = h_zylinder + 2, r = r_innen);
+
+        // Outer wall
+        cylinder(
+            h = cylinder_height,
+            r = outer_radius
+        );
+
+        // Inner cavity
+        translate([0, 0, -1]) {
+            cylinder(
+                h = cylinder_height + 2,
+                r = inner_radius
+            );
+        }
     }
 
-    // 2. Das 30°-Tortenstück zum Wegschneiden
+    //
+    // Remove pie-shaped section
+    //
     translate([0, 0, -1]) {
-        linear_extrude(height = h_zylinder + 2) {
-            tortenstueck_2d(r = r_aussen + 5, winkel = fehlender_winkel);
+
+        linear_extrude(height = cylinder_height + 2) {
+
+            pie_slice_2d(
+                r = outer_radius + 5,
+                angle = missing_angle
+            );
         }
     }
 }
 
-module tortenstueck_2d(r, winkel) {
+
+//
+// 2D pie-slice module
+// Origin located at [0, 0]
+//
+module pie_slice_2d(r, angle) {
+
     intersection() {
+
         circle(r = r);
-        polygon(points = concat(
-            [[0, 0]],
-            [for (a = [0 : 5 : winkel]) [r * 2 * cos(a), r * 2 * sin(a)]], 
-            [[r * 2 * cos(winkel), r * 2 * sin(winkel)]]
-        ));
+
+        polygon(
+            points = concat(
+                [[0, 0]],
+                [
+                    for (a = [0 : 5 : angle])
+                        [r * 2 * cos(a), r * 2 * sin(a)]
+                ],
+                [[r * 2 * cos(angle), r * 2 * sin(angle)]]
+            )
+        );
     }
 }
