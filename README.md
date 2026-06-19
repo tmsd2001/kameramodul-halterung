@@ -27,7 +27,18 @@ Der gesamte Quellcode der parametrischen Modelle sowie die technischen Dokumenta
 Das Resultat ist eine vollständig dokumentierte, versionierte und parametrisch anpassbare 3D-Druck-Konstruktion. Der gewählte Workflow unterstreicht eine systematische, lösungsorientierte Herangehensweise an Problemstellungen, bei denen primäre Konstruktionsdaten fehlen.
 
 
-4. Haftungsausschluss und Mitwirkung (Community)
+4. Wichtiger Hardware- und Betriebshinweis (Beleuchtung)
+
+Während ausgiebiger, mehrstündiger Testphasen mit der AIS-Kamera stellte sich heraus, dass die integrierten LEDs der Kamera keine stabilen Datenlieferungen für die Ziffernerkennung ermöglichten (beispielsweise durch störende Reflexionen auf dem Glas des Zählers). 
+
+**Empfohlene Modifikation für einen stabilen Betrieb:**
+* **Interne Beleuchtung deaktivieren:** Die integrierten LEDs der Kamera sollten vollständig abgeschaltet werden.
+* **Externe Lichtquelle nutzen:** Die Ausleuchtung des Zählers über eine separate, externe LED-Lichtquelle brachte den sofortigen Erfolg. Seit dieser Anpassung erkennt die Kamera die Zahlen absolut zuverlässig und stabil.
+
+Dieser Aspekt sollte beim Nachbau und der Ausrichtung der Halterung unbedingt berücksichtigt werden. Passende Optimierungen und Halterungen für externes Zubehör werden im Ordner `scad/zubehoer.scad` gepflegt.
+
+
+5. Haftungsausschluss und Mitwirkung (Community)
 
 Haftungsausschluss:
 
