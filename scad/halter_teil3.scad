@@ -1,28 +1,30 @@
-include <BOSL2/std.scad>
+include <BOSL2/std.scad>;
 include <BOSL2/screws.scad>;
-
-$fn = 100;    // High resolution for smooth surfaces
 
 
 //
 // Parameters
 //
-base_width         = 26;
-base_depth         = 26;
+base_width         = 29;
+base_depth         = 45;
 base_thickness     = 2;
 
 mount_spacing      = 16;
+mount_y_position   = 10;
+
 mount_radius       = 3.5;
 mount_height       = 4;
 mount_z_position   = 1.8;
 
 thread_spec        = "M3";
-thread_depth       = 15.5;
+thread_length      = 15.5;
 thread_z_position  = 2;
+
+$fn = 100;                  // High resolution for smooth surfaces
 
 
 //
-// Complete part
+// Mounting plate with threaded holes
 //
 difference() {
 
@@ -37,51 +39,36 @@ difference() {
             center = true
         );
 
-        // Right mounting boss
-        translate([mount_spacing / 2, 0, mount_z_position]) {
-            cylinder(
-                h = mount_height,
-                r = mount_radius,
-                center = true
-            );
-        }
+        // Mounting bosses
+        for (x = [-mount_spacing / 2, mount_spacing / 2]) {
 
-        // Left mounting boss
-        translate([-mount_spacing / 2, 0, mount_z_position]) {
-            cylinder(
-                h = mount_height,
-                r = mount_radius,
-                center = true
-            );
+            translate([x, mount_y_position, mount_z_position]) {
+
+                cylinder(
+                    h = mount_height,
+                    r = mount_radius,
+                    center = true
+                );
+            }
         }
     }
 
     //
-    // Right threaded hole
+    // Threaded holes
     //
-    translate([mount_spacing / 2, 0, thread_z_position]) {
+    for (x = [-mount_spacing / 2, mount_spacing / 2]) {
 
-        // BOSL2 uses 'spec' to define thread size.
-        // thread=true generates a real threaded hole.
-        // anchor=CENTER aligns the feature to the local origin.
-        screw_hole(
-            spec   = thread_spec,
-            l      = thread_depth,
-            thread = true,
-            anchor = CENTER
-        );
-    }
+        translate([x, mount_y_position, thread_z_position]) {
 
-    //
-    // Left threaded hole
-    //
-    translate([-mount_spacing / 2, 0, thread_z_position]) {
-
-        screw_hole(
-            spec   = thread_spec,
-            l      = thread_depth,
-            thread = true,
-            anchor = CENTER
-        );
+            // BOSL2 uses 'spec' to define thread size.
+            // thread=true generates a real threaded hole.
+            // anchor=CENTER aligns the feature to the local origin.
+            screw_hole(
+                spec   = thread_spec,
+                l      = thread_length,
+                thread = true,
+                anchor = CENTER
+            );
+        }
     }
 }
